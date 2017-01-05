@@ -1,14 +1,17 @@
 package org.zywx.wbpalmstar.plugin.uexdownloadermgr;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
-import android.text.TextUtils;
-import android.text.format.Time;
-import android.util.Log;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -26,18 +29,15 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.certificates.Http;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.text.format.Time;
+import android.util.Log;
 
 public class EUExDownloaderMgr extends EUExBase {
 
@@ -435,7 +435,7 @@ public class EUExDownloaderMgr extends EUExBase {
                 }
                 response = httpClient.execute(request);
                 int responseCode = response.getStatusLine().getStatusCode();
-                if (responseCode == HttpStatus.SC_OK || responseCode == 206) {
+                if (responseCode >= HttpStatus.SC_OK && responseCode < 300) {
                     fileSize = response.getEntity().getContentLength();
                     if (outputStream == null) {
                         outputStream = new RandomAccessFile(params[1], "rw");
